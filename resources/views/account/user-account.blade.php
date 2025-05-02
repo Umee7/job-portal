@@ -14,12 +14,7 @@
                         <div class="card-block text-center text-white">
                             <div class="m-b-25"> <img src="{{asset('images/user-profile.png')}}" class="img-radius" alt="User-Profile-Image"> </div>
                             <h6 class="f-w-600">{{auth()->user()->name}}</h6>
-                            @role('user')
-                            <p>User</p> 
-                            @endrole
-                            @role('admin')
-                            <p>Author (Job Lister) <i class="fas fa-pen-square"></i></p> 
-                            @endrole
+                            <p>User</p>
                         </div>
                     </div>
                     <div class="col-sm-8">
@@ -28,29 +23,50 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <p class="m-b-10 f-w-600">Email</p>
-                                <h6 class="text-muted f-w-400">{{auth()->user()->email}}</h6>
-                                </div>
-                                <div class="col-sm-6">
-                                    <p class="m-b-10 f-w-600">Phone</p>
-                                    <h6 class="text-muted f-w-400">not set</h6>
+                                    <h6 class="text-muted f-w-400">{{auth()->user()->email}}</h6>
                                 </div>
                             </div>
-                            <h6 class="m-b-20 m-t-40 p-b-5 b-b-default f-w-600">Account</h6>
+
+                            <!-- Resume Upload Section - Always Visible -->
+                            <div class="mt-4">
+                                <h6 class="m-b-20 p-b-5 b-b-default f-w-600">Resume</h6>
+                                <div class="row">
+                                    <div class="col-12">
+                                        @if(auth()->user()->resume)
+                                            <div class="mb-3">
+                                                <p class="m-b-10 f-w-600">Current Resume:</p>
+                                                <a href="{{asset('storage/' . auth()->user()->resume)}}" target="_blank" class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-file-pdf"></i> View Resume
+                                                </a>
+                                            </div>
+                                        @endif
+                                        
+                                        <form action="{{route('account.uploadResume')}}" method="POST" enctype="multipart/form-data" class="mt-3">
+                                            @csrf
+                                            <div class="form-group">
+                                                <label for="resume" class="f-w-600">Upload New Resume:</label>
+                                                <input type="file" name="resume" id="resume" class="form-control-file" accept=".pdf,.doc,.docx" required>
+                                                <small class="form-text text-muted">Accepted formats: PDF, DOC, DOCX (Max size: 2MB)</small>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary mt-2">
+                                                <i class="fas fa-upload"></i> Upload Resume
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h6 class="m-b-20 m-t-40 p-b-5 b-b-default f-w-600">Account Settings</h6>
                             <div class="row">
                                 <div class="col-sm-6">
                                     <p class="m-b-10 f-w-600">Password</p>
                                     <a href="{{route('account.changePassword')}}" class="btn primary-outline-btn">Change password</a>
                                 </div>
                                 <div class="col-sm-6">
-                                  <p class="m-b-10 f-w-600">Logout</p>
-                                    <a href="{{route('logout')}}" class="btn btn-outline-dark">Logout</a>
+                                    <p class="m-b-10 f-w-600">Logout</p>
+                                    <a href="{{route('account.logout')}}" class="btn btn-outline-dark">Logout</a>
                                 </div>
                             </div>
-                            <ul class="social-link list-unstyled m-t-40 m-b-10">
-                                <li><a href="#!" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="facebook" data-abc="true"><i class="mdi mdi-facebook feather icon-facebook facebook" aria-hidden="true"></i></a></li>
-                                <li><a href="#!" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="twitter" data-abc="true"><i class="mdi mdi-twitter feather icon-twitter twitter" aria-hidden="true"></i></a></li>
-                                <li><a href="#!" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="instagram" data-abc="true"><i class="mdi mdi-instagram feather icon-instagram instagram" aria-hidden="true"></i></a></li>
-                            </ul>
                         </div>
                     </div>
                 </div>
@@ -59,7 +75,18 @@
     </div>
   </div>
 </div>
-@endSection
+
+@if ($errors->any())
+<div class="alert alert-danger mt-3">
+    <ul>
+        @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
+
+@endsection
 
 @push('css')
 <style>
@@ -73,18 +100,6 @@
     border: none;
     margin-bottom: 30px
 }
-.m-r-0 {
-    margin-right: 0px
-}
-.m-l-0 {
-    margin-left: 0px
-}
-.user-card-full .user-profile {
-    border-radius: 5px 0 0 5px
-}
-.bg-c-lite-green {
-    background: linear-gradient(to right, #185A91, #3498DA)
-}
 .user-profile {
     padding: 20px 0
 }
@@ -97,20 +112,8 @@
 .img-radius {
     border-radius: 5px
 }
-h6 {
-    font-size: 14px
-}
 .card .card-block p {
     line-height: 25px
-}
-
-@media only screen and (min-width: 1400px) {
-    p {
-        font-size: 14px
-    }
-}
-.card-block {
-    padding: 1.25rem
 }
 .b-b-default {
     border-bottom: 1px solid #e0e0e0
@@ -120,36 +123,15 @@ h6 {
 }
 .p-b-5 {
     padding-bottom: 5px !important
-}
-.card .card-block p {
-    line-height: 25px
-}
-.m-b-10 {
-    margin-bottom: 10px
-}
-.text-muted {
-    color: #919aa3 !important
-}
-.b-b-default {
-    border-bottom: 1px solid #e0e0e0
 }
 .f-w-600 {
     font-weight: 600
 }
-.m-b-20 {
-    margin-bottom: 20px
-}
 .m-t-40 {
-    margin-top: 20px
+    margin-top: 40px
 }
-.p-b-5 {
-    padding-bottom: 5px !important
-}
-.m-b-10 {
-    margin-bottom: 10px
-}
-.m-t-40 {
-    margin-top: 20px
+.bg-c-lite-green {
+    background: linear-gradient(to right, #185A91, #3498DA)
 }
 </style>
 @endpush

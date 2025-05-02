@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [PostController::class, 'index'])->name('post.index');
 Route::get('/job/{job}', [PostController::class, 'show'])->name('post.show');
 Route::get('employer/{employer}', [AuthorController::class, 'employer'])->name('account.employer');
+Route::get('/companies', [CompanyController::class, 'index'])->name('company.index');
 
 //return vue page
 Route::get('/search', [JobController::class, 'index'])->name('job.index');
@@ -28,6 +29,7 @@ Route::middleware('auth')->prefix('account')->group(function () {
   Route::get('change-password', [AccountController::class, 'changePasswordView'])->name('account.changePassword');
   Route::delete('delete', [AccountController::class, 'deleteAccount'])->name('account.delete');
   Route::put('change-password', [AccountController::class, 'changePassword'])->name('account.changePassword');
+  Route::post('upload-resume', [AccountController::class, 'uploadResume'])->name('account.uploadResume');
   //savedJobs
   Route::get('my-saved-jobs', [savedJobController::class, 'index'])->name('savedJob.index');
   Route::get('my-saved-jobs/{id}', [savedJobController::class, 'store'])->name('savedJob.store');

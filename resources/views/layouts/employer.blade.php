@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('layout-holder')
-  @include('inc.navbar')
     <div class="container my-4">
         <div class="employer-layout">
             <div class="row">

@@ -21,6 +21,13 @@
               <div class="col-9">
                 <h6 class="text-info text-capitalize">{{$applicant->name}}</h6>
                 <p class="my-2"><i class="fas fa-envelope"></i> Email: {{$applicant->email}}</p>
+                @if($applicant->resume)
+                    <a href="{{asset('storage/' . $applicant->resume)}}" target="_blank" class="btn btn-sm btn-primary">
+                        <i class="fas fa-file-pdf"></i> View Resume
+                    </a>
+                @else
+                    <span class="text-muted">No resume uploaded</span>
+                @endif
                 <a href="mailto:{{$applicant->email}}" class="btn primary-btn" title="click to send email">Send user an email</a>
               </div>
             </div>

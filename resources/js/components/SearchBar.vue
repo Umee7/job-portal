@@ -1,85 +1,202 @@
 <template>
-  <section class="search-bar mt-2 px-0">
-    <div class="py-4">
-      <div class="row">
-        <div class="col-md-6 offset-md-3">
-          <form>
-            <div class="row m-1">
-              <div class="col-md-12 input-group">
-                <input
-                  type="text"
-                  name="q"
-                  class="form-control"
-                  placeholder="Search By Job Title"
-                  v-model="jobTitle"
-                />
-                <span class="input-group-append">
-                  <button class="btn btn-success pt-1" @click="searchByTitle">
-                    <span class="icon-search"></span> Search Jobs
-                  </button>
-                </span>
-              </div>
+    <section class="search-section">
+        <div class="search-container">
+            <div class="search-wrapper">
+                <form @submit.prevent="searchByTitle">
+                    <div class="search-input-group">
+                        <input
+                            type="text"
+                            name="q"
+                            class="search-input"
+                            placeholder="Search jobs by title, company, or keywords"
+                            v-model="jobTitle"
+                        />
+                        <button type="submit" class="search-button">
+                            <i class="fas fa-search"></i>
+                            <span>Search Jobs</span>
+                        </button>
+                    </div>
+                </form>
+
+                <div class="search-links">
+                    <router-link to="/" class="search-link">
+                        <i class="fas fa-briefcase"></i>
+                        <span>All Jobs</span>
+                    </router-link>
+                    <router-link to="/jobs-by-organization" class="search-link">
+                        <i class="fas fa-building"></i>
+                        <span>By Organisation</span>
+                    </router-link>
+                    <router-link to="/jobs-by-category" class="search-link">
+                        <i class="fas fa-th-large"></i>
+                        <span>By Category</span>
+                    </router-link>
+                    <router-link to="/jobs-by-title" class="search-link">
+                        <i class="fas fa-tag"></i>
+                        <span>By Title</span>
+                    </router-link>
+                </div>
             </div>
-          </form>
         </div>
-        <div class="col-sm-12 col-md-6 offset-md-3 small text-center my-2">
-          <div class="row">
-            <div class="col-sm-6 col-md-3">
-              <router-link to="/">All Jobs</router-link>
-            </div>
-            <div class="col-sm-6 col-md-3">
-              <router-link to="/jobs-by-organization"
-                >By Organisation</router-link
-              >
-            </div>
-            <div class="col-sm-6 col-md-3">
-              <router-link to="/jobs-by-category">By Job Category</router-link>
-            </div>
-            <div class="col-sm-6 col-md-3">
-              <router-link to="/jobs-by-title">By Job Title</router-link>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+    </section>
 </template>
 
 <script>
 export default {
-  name: "search-bar",
-  data() {
-    return {
-      jobTitle: null,
-    };
-  },
-  mounted() {
-    const q = this.getParameterByName("q", window.location.href);
-    if (q !== "") {
-      this.jobTitle = q;
+    name: "search-bar",
+    data() {
+        return {
+            jobTitle: null
+        };
+    },
+    mounted() {
+        const q = this.getParameterByName("q", window.location.href);
+        if (q !== "") {
+            this.jobTitle = q;
+        }
+    },
+    methods: {
+        searchByTitle() {
+            if (this.jobTitle && this.jobTitle.trim() !== "") {
+                this.$emit("searchByTitle", this.jobTitle);
+            }
+        },
+        getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return "";
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
     }
-  },
-  methods: {
-    searchByTitle() {
-      if (this.jobTitle.trim() != "") {
-        this.$emit("searchByTitle", this.jobTitle);
-      }
-    },
-    getParameterByName(name, url) {
-      if (!url) url = window.location.href;
-      name = name.replace(/[\[\]]/g, "\\$&");
-      var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-        results = regex.exec(url);
-      if (!results) return null;
-      if (!results[2]) return "";
-      return decodeURIComponent(results[2].replace(/\+/g, " "));
-    },
-  },
 };
 </script>
 
 <style scoped>
-.search-bar {
-  background-color: #f5fdff;
+.search-section {
+    width: 100%;
+    padding: 1.5rem 1rem;
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
 }
-</style>>
+
+.search-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.search-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.search-input-group {
+    position: relative;
+    width: 100%;
+}
+
+.search-input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 1.5rem;
+    font-size: 1rem;
+    color: var(--text-primary);
+    background-color: var(--bg-tertiary);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.search-input::placeholder {
+    color: var(--text-muted);
+}
+
+.search-button {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(
+        135deg,
+        var(--accent-primary),
+        var(--accent-secondary)
+    );
+    color: var(--text-primary);
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.search-button:hover {
+    transform: translateY(-50%) translateX(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.search-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.search-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.search-link:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-tertiary);
+    text-decoration: none;
+}
+
+.search-link.router-link-active {
+    color: var(--accent-primary);
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+@media (max-width: 768px) {
+    .search-section {
+        padding: 1rem;
+    }
+
+    .search-button {
+        position: relative;
+        right: auto;
+        top: auto;
+        transform: none;
+        width: 100%;
+        margin-top: 1rem;
+        justify-content: center;
+    }
+
+    .search-links {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .search-link {
+        justify-content: center;
+    }
+}
+</style>

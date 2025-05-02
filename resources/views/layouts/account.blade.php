@@ -2,7 +2,6 @@
 
 @section('layout-holder')
     {{-- styles here are placed account-layout.scss   --}}
-    @include('inc.navbar')
     <div class="container my-4">
         <div class="account-layout">
             <div class="account-hdr border">

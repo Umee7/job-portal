@@ -11,6 +11,20 @@ use RealRashid\SweetAlert\Facades\Alert;
 class CompanyController extends Controller
 {
     /**
+     * Display a listing of companies.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $companies = Company::with(['category', 'posts'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
+        
+        return view('company.index', compact('companies'));
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response

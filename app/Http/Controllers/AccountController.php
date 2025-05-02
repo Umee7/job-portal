@@ -114,6 +114,24 @@ class AccountController extends Controller
         return view('account.deactivate');
     }
 
+    public function uploadResume(Request $request)
+    {
+        $request->validate([
+            'resume' => 'required|file|mimes:pdf,doc,docx|max:2048'
+        ]);
+
+        if ($request->hasFile('resume')) {
+            $path = $request->file('resume')->store('resumes', 'public');
+            $user = User::find(auth()->user()->id);
+            $user->resume = $path;
+            $user->save();
+            
+            Alert::toast('Resume uploaded successfully!', 'success');
+        }
+
+        return redirect()->route('account.index');
+    }
+
     public function deleteAccount()
     {
         $user = User::find(auth()->user()->id);
